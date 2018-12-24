@@ -1,0 +1,65 @@
+# --------------------------------------------------------
+# JEDDi-Net
+# Copyright (c) 2018 Boston Univ.
+# Licensed under The MIT License [see LICENSE for details]
+# Written by Huijuan Xu
+# --------------------------------------------------------
+
+name: "lstm_controller_model"
+
+input: "cont_sent_controller"
+input_shape { dim: 1 dim: 1 }
+
+input: "embedded_input_sent_pool_controller"
+input_shape { dim: 1 dim: 1 dim: 300}
+
+input: "fc6_controller"
+input_shape { dim: 1 dim: 4096 }
+
+
+########## lstm: controller   ##########
+layer {
+  name: "lstm_controller"
+  type: "LSTMController"
+  bottom: "embedded_input_sent_pool_controller"
+  bottom: "cont_sent_controller"
+  bottom: "fc6_controller"
+  top: "lstm_controller"
+  recurrent_param {
+    num_output: 20
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "lstm-drop_controller"
+  type: "Dropout"
+  bottom: "lstm_controller"
+  top: "lstm_controller"
+  dropout_param { dropout_ratio: 0.5 }
+}
+
+layer {
+   name: "lstm_controller_reshape"
+   bottom: "lstm_controller"
+   top: "lstm_controller_reshape"
+   type: "Reshape"
+   reshape_param { shape {dim: 1 dim: 20} }
+}
+
+
+
+
+
+
+
+
+
+

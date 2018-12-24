@@ -1,0 +1,76 @@
+# --------------------------------------------------------
+# JEDDi-Net
+# Copyright (c) 2018 Boston Univ.
+# Licensed under The MIT License [see LICENSE for details]
+# Written by Huijuan Xu
+# --------------------------------------------------------
+
+
+name: "sentence_embedding_model"
+
+input: "input_sent_1"
+input_shape { dim: 30 dim: 1 }
+
+
+layer {
+  name: "embedding"
+  #name: "embedding_1"
+  type: "Embed"
+  bottom: "input_sent_1"
+  top: "embedded_input_sent_1"
+  param {
+    #name: "word_embed"
+    lr_mult: 1
+  }
+  embed_param {
+    bias_term: false
+    input_dim: 3892  # = vocab_size + 1 (for EOS)
+    num_output: 300
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+  }
+}
+layer {
+  name: "embed-drop_1"
+  type: "Dropout"
+  bottom: "embedded_input_sent_1"
+  top: "embedded_input_sent_1"
+  dropout_param { dropout_ratio: 0.5 }
+}
+
+layer {
+   name: "embedded_input_sent_reshape_1"
+   bottom: "embedded_input_sent_1"
+   top: "embedded_input_sent_reshape_1"
+   type: "Reshape"
+   #reshape_param { shape { dim: 1 dim: 1 dim: 30 dim: -1 dim: 300} }
+   reshape_param { shape { dim: 1 dim: 1 dim: 30 dim: -1} }
+}
+layer {
+  name: "embedded_input_sent_pool_1"
+  type: "Pooling"
+  bottom: "embedded_input_sent_reshape_1"
+  top: "embedded_input_sent_pool_1"
+  pooling_param {
+    pool: AVE
+    kernel_size: 30
+    kernel_size: 1
+    #kernel_size: 1
+    stride: 30
+    stride: 1
+    #stride: 1
+  }
+}
+layer {
+   name: "embedded_input_sent_pool_reshape_1"
+   bottom: "embedded_input_sent_pool_1"
+   top: "embedded_input_sent_pool_reshape_1"
+   type: "Reshape"
+   reshape_param { shape { dim: -1 dim: 1 dim: 300} }
+}
+
+
+

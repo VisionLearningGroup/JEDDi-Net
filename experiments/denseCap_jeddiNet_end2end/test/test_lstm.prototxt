@@ -1,0 +1,157 @@
+# --------------------------------------------------------
+# JEDDi-Net
+# Copyright (c) 2018 Boston Univ.
+# Licensed under The MIT License [see LICENSE for details]
+# Written by Huijuan Xu
+# --------------------------------------------------------
+
+
+name: "lstm_sentence_t2_model"
+
+input: "cont_sentence"
+input_shape { dim: 1 dim: 1 }
+
+input: "input_sentence"
+input_shape { dim: 1 dim: 1 }
+
+input: "fc6"
+input_shape { dim: 1 dim: 4096 }
+
+input: "lstm_controller_gt"
+input_shape { dim: 1 dim: 20 }
+
+
+layer {
+  name: "embedding"
+  type: "Embed"
+  bottom: "input_sentence"
+  top: "embedded_input_sentence"
+  param {
+    lr_mult: 10
+  }
+  embed_param {
+    bias_term: false
+    input_dim: 3892  # = vocab_size + 1 (for EOS)
+    num_output: 300
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+  }
+}
+layer {
+  name: "embed-drop"
+  type: "Dropout"
+  bottom: "embedded_input_sentence"
+  top: "embedded_input_sentence"
+  dropout_param { dropout_ratio: 0.5 }
+}
+
+########## lstm: 2    ##########
+
+layer {
+  name: "lstm1_2"
+  type: "LSTM"
+  bottom: "embedded_input_sentence"
+  bottom: "cont_sentence"
+  #bottom: "caption_fc6_target"
+  top: "lstm1"
+  param { lr_mult: 10 }
+  param { lr_mult: 10 }
+  param { lr_mult: 10 }
+  recurrent_param {
+    num_output: 512
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "lstm-drop"
+  type: "Dropout"
+  bottom: "lstm1"
+  top: "lstm1"
+  dropout_param { dropout_ratio: 0.5 }
+}
+
+layer {
+  name: "lstm2_2"
+  #type: "LSTMTopicFirst"
+  type: "LSTMTopic"
+  bottom: "lstm1"
+  bottom: "cont_sentence"
+  bottom: "fc6"
+  bottom: "lstm_controller_gt"
+  top: "lstm2"
+  param { lr_mult: 10 }
+  param { lr_mult: 10 }
+  param { lr_mult: 10 }
+  param { lr_mult: 10 }
+  param { lr_mult: 10 }
+  recurrent_param {
+    num_output: 512
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "lstm-drop_2"
+  type: "Dropout"
+  bottom: "lstm2"
+  top: "lstm2"
+  dropout_param { dropout_ratio: 0.5 }
+  include { stage: "lstm-drop" }
+}
+
+
+layer {
+  name: "predict"
+  type: "InnerProduct"
+  bottom: "lstm2"
+  top: "predict"
+  param {
+    lr_mult: 10
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 20
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 3892  # = vocab_size + 1 (+1 for EOS)
+    weight_filler {
+      type: "uniform"
+      min: -0.08
+      max: 0.08
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+    axis: 2
+  }
+}
+
+layer {
+  name: "probs"
+  type: "Softmax"
+  bottom: "predict"
+  top: "probs"
+  softmax_param { axis: 2 }
+}
+
+
