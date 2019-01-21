@@ -72,7 +72,7 @@ If you find JEDDi-Net useful in your research, please consider citing:
 
 ### Training:
     
-1. Download the separately-trained [segment proposal network(SPN)](https://drive.google.com/file/d/1GSaftfB1cprnKUOo8DSvbhp6SVAZbAMA/view) and [captioning](https://drive.google.com/file/d/1GbKl-0QnwIf1AvgFB-DQlbEoSJ3FVcQG/view) models ./pretrain/ .
+1. Download the separately-trained [segment proposal network(SPN)](https://drive.google.com/file/d/1GSaftfB1cprnKUOo8DSvbhp6SVAZbAMA/view?usp=sharing) and [captioning](https://drive.google.com/file/d/1GbKl-0QnwIf1AvgFB-DQlbEoSJ3FVcQG/view?usp=sharing) models ./pretrain/ .
 
 2. In JEDDi-Net root folder, run:
    ```Shell
@@ -83,7 +83,7 @@ If you find JEDDi-Net useful in your research, please consider citing:
 
 1. Download one sample JEDDi-Net model to ./snapshot/ .
 
-   One JEDDi-Net model on ActivityNet Captions dataset is provided in: [caffemodel .](https://drive.google.com/file/d/1vtPeyPqqvsfNNfX16rUK7QsbrAEgxVxZ/view)
+   One JEDDi-Net model on ActivityNet Captions dataset is provided in: [caffemodel .](https://drive.google.com/file/d/1vtPeyPqqvsfNNfX16rUK7QsbrAEgxVxZ/view?usp=sharing)
 
    The provided JEDDi-Net model has the METEOR score ~8.58% on the validation set.
    
