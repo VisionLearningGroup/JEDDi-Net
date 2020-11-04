@@ -17,9 +17,9 @@ If you find JEDDi-Net useful in your research, please consider citing:
 
     @article{xu2019joint,
 	title={Joint Event Detection and Description in Continuous Video Streams},
-      	author={Xu, Huijuan and Li, Boyang and Ramanishka, Vasili and Sigal, Leonid and Saenko, Kate},
+	author={Xu, Huijuan and Li, Boyang and Ramanishka, Vasili and Sigal, Leonid and Saenko, Kate},
 	journal={2019 IEEE Winter Conference on Applications of Computer Vision (WACV)},
-        year={2019}
+	year={2019}
     }
 
 
